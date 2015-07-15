@@ -50,15 +50,16 @@
 #   Defaults to false
 #
 class openstack_extras::repo::redhat::redhat(
-  $release          = $::openstack_extras::repo::redhat::params::release,
-  $manage_rdo       = true,
-  $manage_epel      = true,
-  $repo_hash        = {},
-  $repo_defaults    = {},
-  $gpgkey_hash      = {},
-  $gpgkey_defaults  = {},
-  $purge_unmanaged  = false,
-  $package_require  = false
+  $release         = $::openstack_extras::repo::redhat::params::release,
+  $manage_rdo      = true,
+  $manage_epel     = true,
+  $repo_hash       = {},
+  $repo_defaults   = {},
+  $gpgkey_hash     = {},
+  $gpgkey_defaults = {},
+  $rdo_priority    = undef,
+  $purge_unmanaged = false,
+  $package_require = false
 ) inherits openstack_extras::repo::redhat::params {
 
   validate_string($release)
@@ -88,7 +89,7 @@ class openstack_extras::repo::redhat::redhat(
     $rdo_hash = { 'rdo-release' => {
         'baseurl'  => "http://repos.fedorapeople.org/repos/openstack/openstack-${release}/${_dist}${::operatingsystemmajrelease}/",
         'descr'    => "OpenStack ${release_cap} Repository",
-        'priority' => $::openstack_extras::repo::redhat::params::rdo_priority,
+        'priority' => pick($rdo_priority, $::openstack_extras::repo::redhat::params::rdo_priority),
         'gpgkey'   => "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-RDO-${release_cap}",
       }
     }
